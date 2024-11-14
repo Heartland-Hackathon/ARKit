@@ -275,18 +275,23 @@ class MainViewController: UIViewController {
 
 	@IBOutlet weak var screenshotButton: UIButton!
 	@IBAction func takeSnapShot() {
-		guard sceneView.session.currentFrame != nil else { return }
-		focusSquare?.isHidden = true
-
-		let imagePlane = SCNPlane(width: sceneView.bounds.width / 6000, height: sceneView.bounds.height / 6000)
-		imagePlane.firstMaterial?.diffuse.contents = sceneView.snapshot()
-		imagePlane.firstMaterial?.lightingModel = .constant
-
-		let planeNode = SCNNode(geometry: imagePlane)
-		sceneView.scene.rootNode.addChildNode(planeNode)
-
-		focusSquare?.isHidden = false
+        guard sceneView.session.currentFrame != nil else { return }
+        focusSquare?.isHidden = true
+        removeVirtualObjectSelected()
+        
+//		let imagePlane = SCNPlane(width: sceneView.bounds.width / 6000, height: sceneView.bounds.height / 6000)
+//		imagePlane.firstMaterial?.diffuse.contents = sceneView.snapshot()
+//		imagePlane.firstMaterial?.lightingModel = .constant
+//
+//		let planeNode = SCNNode(geometry: imagePlane)
+//		sceneView.scene.rootNode.addChildNode(planeNode)
+//
+//		focusSquare?.isHidden = false
 	}
+    
+    func removeVirtualObjectSelected() {
+        VirtualObjectsManager.shared.removeVirtualObjectSelected()
+    }
 
 	// MARK: - Settings
 
