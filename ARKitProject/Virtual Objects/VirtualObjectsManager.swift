@@ -64,6 +64,10 @@ class VirtualObjectsManager {
 	}
 
 	func setVirtualObjectSelected(virtualObject: VirtualObject) {
+        virtualObjects.forEach { obj in
+            obj.onDeselectNode()
+        }
+        virtualObject.onSelectNode()
 		self.virtualObjectSelected = virtualObject
 	}
 

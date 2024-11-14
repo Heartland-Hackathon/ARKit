@@ -3,6 +3,7 @@ import SceneKit
 import ARKit
 
 class VirtualObject: SCNNode {
+    static let ringName = "ring"
 	static let ROOT_NAME = "Virtual object root node"
 	var fileExtension: String = ""
 	var thumbImage: UIImage!
@@ -12,6 +13,26 @@ class VirtualObject: SCNNode {
 	var id: Int!
 
 	var viewController: MainViewController?
+    
+    var ringNode: SCNNode = {
+       
+        let selectionGeometry = SCNTorus(ringRadius: 0.02, pipeRadius: 0.005)
+        selectionGeometry.ringSegmentCount = 100
+        selectionGeometry.firstMaterial?.diffuse.contents = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+        
+        let ringNode = SCNNode(geometry: selectionGeometry)
+        ringNode.name = ringName
+        ringNode.light = SCNLight()
+        ringNode.light?.type = SCNLight.LightType.ambient
+        ringNode.eulerAngles = SCNVector3(90.0.degreesToRadians, 0, 0)
+        return ringNode
+    }()
+    
+    var isRingHidden: Bool = true {
+        didSet {
+            ringNode.isHidden = isRingHidden
+        }
+    }
 
 	override init() {
 		super.init()
@@ -45,8 +66,12 @@ class VirtualObject: SCNNode {
 			child.movabilityHint = .movable
 			wrapperNode.addChildNode(child)
 		}
-		self.addChildNode(wrapperNode)
+		addChildNode(wrapperNode)
 
+        ringNode.isHidden = true
+        ringNode.position = SCNVector3(0, boundingBox.max.y + 0.05, -0.04)
+        addChildNode(ringNode)
+        
 		modelLoaded = true
 	}
 
@@ -65,6 +90,16 @@ class VirtualObject: SCNNode {
 		let result = controller.worldPositionFromScreenPosition(pos, objectPos: self.position, infinitePlane: infinitePlane)
 		controller.moveVirtualObjectToPosition(result.position, instantly, !result.hitAPlane)
 	}
+    
+    func onSelectNode() {
+        isRingHidden = false
+        ringNode.geometry?.firstMaterial?.diffuse.contents = UIColor.yellow
+    }
+    
+    func onDeselectNode() {
+        isRingHidden = true
+        ringNode.geometry?.firstMaterial?.diffuse.contents = UIColor.white
+    }
 }
 
 extension VirtualObject {
