@@ -21,6 +21,8 @@
 		39D8DC1B1E8ADAE600386B05 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 39D8DC1A1E8ADAE600386B05 /* LaunchScreen.storyboard */; };
 		582FB0721F43EAC600AD8041 /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 582FB0711F43EAC600AD8041 /* .swiftlint.yml */; };
 		58DE9FC71FDDA042008E25AF /* VirtualObjectsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58DE9FC61FDDA041008E25AF /* VirtualObjectsManager.swift */; };
+		738D7B972CE4EC35007E1841 /* FloatingPoint+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 738D7B952CE4EC35007E1841 /* FloatingPoint+Extensions.swift */; };
+		738D7B982CE4EC35007E1841 /* CGPoint+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 738D7B962CE4EC35007E1841 /* CGPoint+Extensions.swift */; };
 		A35A11CF1EF4EB070072FE74 /* ScieneView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A35A11CE1EF4EB070072FE74 /* ScieneView+Extension.swift */; };
 		A3D672ED1EF0E7C500110E48 /* Cup.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3D672EC1EF0E7C500110E48 /* Cup.swift */; };
 		A3D672EF1EF0E80200110E48 /* Candle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3D672EE1EF0E80200110E48 /* Candle.swift */; };
@@ -51,6 +53,8 @@
 		39D8DC1A1E8ADAE600386B05 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		582FB0711F43EAC600AD8041 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text; path = .swiftlint.yml; sourceTree = "<group>"; };
 		58DE9FC61FDDA041008E25AF /* VirtualObjectsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualObjectsManager.swift; sourceTree = "<group>"; };
+		738D7B952CE4EC35007E1841 /* FloatingPoint+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FloatingPoint+Extensions.swift"; sourceTree = "<group>"; };
+		738D7B962CE4EC35007E1841 /* CGPoint+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGPoint+Extensions.swift"; sourceTree = "<group>"; };
 		A35A11CE1EF4EB070072FE74 /* ScieneView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ScieneView+Extension.swift"; sourceTree = "<group>"; };
 		A3D672E41EF0E64100110E48 /* ARKitProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ARKitProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A3D672EC1EF0E7C500110E48 /* Cup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cup.swift; sourceTree = "<group>"; };
@@ -130,6 +134,8 @@
 				A3D672F01EF0E81B00110E48 /* Chair.swift */,
 				A3D672F21EF0E84D00110E48 /* Lamp.swift */,
 				A3D672F41EF0E8DF00110E48 /* Vase.swift */,
+				738D7B962CE4EC35007E1841 /* CGPoint+Extensions.swift */,
+				738D7B952CE4EC35007E1841 /* FloatingPoint+Extensions.swift */,
 			);
 			path = "Virtual Objects";
 			sourceTree = "<group>";
@@ -167,7 +173,7 @@
 				TargetAttributes = {
 					3929C4871E89EC2C00E00B60 = {
 						CreatedOnToolsVersion = 9.0;
-						DevelopmentTeam = 6ZYNJZSY2C;
+						DevelopmentTeam = USRC9KNP8W;
 						LastSwiftMigration = 0900;
 						ProvisioningStyle = Automatic;
 					};
@@ -235,9 +241,11 @@
 				C41366B91EB80DD400EC054A /* TextManager.swift in Sources */,
 				39C0B95A1E9C6B1F003FCA0C /* Utilities.swift in Sources */,
 				392BB82C1EA19A7C00FBBAC8 /* Plane.swift in Sources */,
+				738D7B972CE4EC35007E1841 /* FloatingPoint+Extensions.swift in Sources */,
 				A3D672F11EF0E81B00110E48 /* Chair.swift in Sources */,
 				A3D672F51EF0E8DF00110E48 /* Vase.swift in Sources */,
 				3987BEDC1E9E057F00167FAC /* Gesture.swift in Sources */,
+				738D7B982CE4EC35007E1841 /* CGPoint+Extensions.swift in Sources */,
 				C4E87DD91EA6B40F002117D6 /* VirtualObject.swift in Sources */,
 				39D4A8BE1EA1AF530006EC65 /* PlaneDebugVisualization.swift in Sources */,
 				39C0B9591E9C6B1F003FCA0C /* SettingsViewController.swift in Sources */,
@@ -386,10 +394,11 @@
 				CODE_SIGN_IDENTITY = "-";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 6ZYNJZSY2C;
+				DEVELOPMENT_TEAM = USRC9KNP8W;
 				INFOPLIST_FILE = "$(SRCROOT)/ARKitProject/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.example.arkit-project";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.globalpay.arkit-tao";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
@@ -403,8 +412,9 @@
 				CODE_SIGN_IDENTITY = "-";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 6ZYNJZSY2C;
+				DEVELOPMENT_TEAM = 277JV3TTVQ;
 				INFOPLIST_FILE = "$(SRCROOT)/ARKitProject/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.example.arkit-project";
 				PRODUCT_NAME = "$(TARGET_NAME)";

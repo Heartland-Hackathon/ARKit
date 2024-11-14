@@ -21,6 +21,12 @@ class MainViewController: UIViewController {
 
 	let DEFAULT_DISTANCE_CAMERA_TO_OBJECTS = Float(10)
 
+    var focusPoint: CGPoint {
+        return CGPoint(
+            x: sceneView.bounds.size.width / 2,
+            y: sceneView.bounds.size.height - (sceneView.bounds.size.height / 1.618))
+    }
+    
 	override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -510,6 +516,19 @@ extension MainViewController: VirtualObjectSelectionViewControllerDelegate {
 	}
 }
 
+// MARK: - Ring
+extension MainViewController {
+    
+    func onSelectNode(node: VirtualObject) {
+        VirtualObjectsManager.shared.getVirtualObjectSelected()?.onDeselectNode()
+        VirtualObjectsManager.shared.setVirtualObjectSelected(virtualObject: node)
+    }
+    
+    func onSelectionEnded() {
+        VirtualObjectsManager.shared.getVirtualObjectSelected()?.onDeselectNode()
+    }
+}
+
 // MARK: - ARSCNViewDelegate
 extension MainViewController: ARSCNViewDelegate {
 	func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
@@ -520,11 +539,21 @@ extension MainViewController: ARSCNViewDelegate {
 			self.hitTestVisualization?.render()
 
 			// If light estimation is enabled, update the intensity of the model's lights and the environment map
-			if let lightEstimate = self.session.currentFrame?.lightEstimate {
-				self.sceneView.enableEnvironmentMapWithIntensity(lightEstimate.ambientIntensity / 40)
-			} else {
-				self.sceneView.enableEnvironmentMapWithIntensity(25)
-			}
+//			if let lightEstimate = self.session.currentFrame?.lightEstimate {
+//				self.sceneView.enableEnvironmentMapWithIntensity(lightEstimate.ambientIntensity / 40)
+//			} else {
+//				self.sceneView.enableEnvironmentMapWithIntensity(25)
+//			}
+            
+            for node in VirtualObjectsManager.shared.getVirtualObjects() {
+                let position = node.ringNode.convertPosition(SCNVector3Zero, to: nil)
+                let projectedPoint = renderer.projectPoint(position)
+                let projectedCGPoint = CGPoint(x: CGFloat(projectedPoint.x), y: CGFloat(projectedPoint.y))
+                let distance = projectedCGPoint.distance(to: self.focusPoint)
+                if distance < 50 {
+                    self.onSelectNode(node: node)
+                }
+            }
 		}
 	}
 
