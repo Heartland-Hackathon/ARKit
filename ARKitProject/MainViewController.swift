@@ -20,6 +20,32 @@ class MainViewController: UIViewController {
 	var recentVirtualObjectDistances = [CGFloat]()
 
 	let DEFAULT_DISTANCE_CAMERA_TO_OBJECTS = Float(10)
+    
+    lazy var menuContentView: MenuContentView = {
+        let view =  MenuContentView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.delegate = self
+        return view
+    }()
+    
+    lazy var foldButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.backgroundColor = .yellow
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(onClickfoldButton), for: .touchUpInside)
+        return button
+    }()
+    
+    var menuViewWidthConst: NSLayoutConstraint?
+    
+    let data: [(String, String)] = [
+        ("candle", "This is menu item 1."),
+        ("cup", "This is menu item 2."),
+        ("candle", "This is menu item 3."),
+        ("chair", "This is menu item 4."),
+        ("lamp", "This is menu item 5."),
+        ("vase", "This is menu item 6.")
+    ]
 
     var focusPoint: CGPoint {
         return CGPoint(
@@ -37,6 +63,7 @@ class MainViewController: UIViewController {
 		setupFocusSquare()
 		updateSettings()
 		resetVirtualObject()
+        setupMenuView()
     }
 
 	override func viewDidAppear(_ animated: Bool) {
@@ -62,6 +89,33 @@ class MainViewController: UIViewController {
 		}
 	}
 	@IBOutlet var sceneView: ARSCNView!
+    
+    func setupMenuView() {
+        menuContentView.data = data
+        view.addSubview(menuContentView)
+        view.addSubview(foldButton)
+        menuViewWidthConst =  menuContentView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width / 3)
+        menuViewWidthConst!.isActive = true
+        NSLayoutConstraint.activate([
+            menuContentView.topAnchor.constraint(equalTo: view.topAnchor),
+            menuContentView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            menuContentView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
+            foldButton.centerYAnchor.constraint(equalTo: menuContentView.centerYAnchor),
+            foldButton.leadingAnchor.constraint(equalTo: menuContentView.leadingAnchor, constant: -10),
+            foldButton.widthAnchor.constraint(equalToConstant: 20),
+            foldButton.heightAnchor.constraint(equalToConstant: 40)
+        ])
+    }
+    
+    @objc
+    func onClickfoldButton(sender: UIButton) {
+        sender.isSelected = !sender.isSelected
+        menuViewWidthConst?.constant = sender.isSelected ? 0 : UIScreen.main.bounds.width / 3
+        UIView.animate(withDuration: 0.25) {
+            self.view.layoutIfNeeded()
+        }
+    }
 
     // MARK: - Ambient Light Estimation
 	func toggleAmbientLightEstimation(_ enabled: Bool) {
@@ -804,4 +858,15 @@ extension MainViewController {
 			SCNTransaction.commit()
 		}
 	}
+}
+
+extension MainViewController: MenuContentViewDelegate {
+    func menuContentView(contentView: MenuContentView, didSelectAt index: Int) {
+        guard let pandaView = PandaLoadingView.showLoading() else { return }
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1, execute: {
+            PandaLoadingView.dismissLoading(view: pandaView)
+            let object = VirtualObject(modelName: self.data[index].0, fileExtension: "scn", thumbImageFilename: self.data[index].0, title: self.data[index].0)
+            self.loadVirtualObject(object: object)
+        })
+    }
 }
