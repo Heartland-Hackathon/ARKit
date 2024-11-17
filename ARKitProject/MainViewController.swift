@@ -539,22 +539,6 @@ extension MainViewController:
 	func virtualObjectSelectionViewController(_: VirtualObjectSelectionViewController, object: VirtualObject) {
 		loadVirtualObject(object: object)
 	}
-    
-    func analyzeItem(object: VirtualObject) {
-        AICenter.shared.analyzeItem(item: object) { result in
-            switch result {
-            case .success(let analyzeResult):
-                DispatchQueue.main.async {
-                    self.suggestionView.text = analyzeResult.suggestionDescription()
-                }
-                
-            case .failure(let error):
-                DispatchQueue.main.async {
-                    self.suggestionView.text = error.localizedDescription
-                }
-            }
-        }
-    }
 
 	func loadVirtualObject(object: VirtualObject) {
         analyzeItem(object: object)
@@ -592,18 +576,6 @@ extension MainViewController:
 			}
 		}
 	}
-}
-
-// MARK: - Ring
-extension MainViewController {
-    
-    func onSelectNode(node: VirtualObject) {
-        VirtualObjectsManager.shared.setVirtualObjectSelected(virtualObject: node)
-    }
-    
-    func onSelectionEnded() {
-        VirtualObjectsManager.shared.getVirtualObjectSelected()?.onDeselectNode()
-    }
 }
 
 // MARK: - ARSCNViewDelegate
@@ -886,5 +858,53 @@ extension MainViewController: MenuContentViewDelegate {
             let object = VirtualObject(modelName: self.data[index].0, fileExtension: "scn", thumbImageFilename: self.data[index].0, title: self.data[index].0)
             self.loadVirtualObject(object: object)
         })
+    }
+}
+
+// MARK: - AI
+extension MainViewController {
+    func analyzeItem(object: VirtualObject) {
+        AICenter.shared.analyzeItem(item: object) { result in
+            switch result {
+            case .success(let analyzeResult):
+                DispatchQueue.main.async {
+                    self.suggestionView.text = analyzeResult.suggestionDescription()
+                }
+                
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    self.suggestionView.text = error.localizedDescription
+                }
+            }
+        }
+    }
+    
+    func analyzeOrder() {
+        // TODO: change order name, record order items
+        AICenter.shared.analyzeOrder(order: "M12", items: VirtualObjectsManager.shared.getVirtualObjects()) { result in
+            switch result {
+            case .success(let analyzeResult):
+                DispatchQueue.main.async {
+                    self.suggestionView.text = analyzeResult.suggestionDescription()
+                }
+                
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    self.suggestionView.text = error.localizedDescription
+                }
+            }
+        }
+    }
+}
+
+// MARK: - Ring
+extension MainViewController {
+    
+    func onSelectNode(node: VirtualObject) {
+        VirtualObjectsManager.shared.setVirtualObjectSelected(virtualObject: node)
+    }
+    
+    func onSelectionEnded() {
+        VirtualObjectsManager.shared.getVirtualObjectSelected()?.onDeselectNode()
     }
 }
