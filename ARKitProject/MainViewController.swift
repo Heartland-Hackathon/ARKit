@@ -16,7 +16,8 @@ class MainViewController: UIViewController {
 
 	var trackingFallbackTimer: Timer?
 
-	// Use average of recent virtual object distances to avoid rapid changes in object scale.
+    @IBOutlet weak var suggestionView: UITextView!
+    // Use average of recent virtual object distances to avoid rapid changes in object scale.
 	var recentVirtualObjectDistances = [CGFloat]()
 
 	let DEFAULT_DISTANCE_CAMERA_TO_OBJECTS = Float(10)
@@ -533,12 +534,30 @@ extension MainViewController: UIPopoverPresentationControllerDelegate {
 }
 
 // MARK: - VirtualObjectSelectionViewControllerDelegate
-extension MainViewController: VirtualObjectSelectionViewControllerDelegate {
+extension MainViewController:
+    VirtualObjectSelectionViewControllerDelegate {
 	func virtualObjectSelectionViewController(_: VirtualObjectSelectionViewController, object: VirtualObject) {
 		loadVirtualObject(object: object)
 	}
+    
+    func analyzeItem(object: VirtualObject) {
+        AICenter.shared.analyzeItem(item: object) { result in
+            switch result {
+            case .success(let analyzeResult):
+                DispatchQueue.main.async {
+                    self.suggestionView.text = analyzeResult.suggestionDescription()
+                }
+                
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    self.suggestionView.text = error.localizedDescription
+                }
+            }
+        }
+    }
 
 	func loadVirtualObject(object: VirtualObject) {
+        analyzeItem(object: object)
 		// Show progress indicator
 		let spinner = UIActivityIndicatorView()
 		spinner.center = addObjectButton.center
@@ -579,7 +598,6 @@ extension MainViewController: VirtualObjectSelectionViewControllerDelegate {
 extension MainViewController {
     
     func onSelectNode(node: VirtualObject) {
-        VirtualObjectsManager.shared.getVirtualObjectSelected()?.onDeselectNode()
         VirtualObjectsManager.shared.setVirtualObjectSelected(virtualObject: node)
     }
     
