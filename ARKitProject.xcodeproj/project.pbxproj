@@ -25,6 +25,8 @@
 		58DE9FC71FDDA042008E25AF /* VirtualObjectsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58DE9FC61FDDA041008E25AF /* VirtualObjectsManager.swift */; };
 		738D7B972CE4EC35007E1841 /* FloatingPoint+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 738D7B952CE4EC35007E1841 /* FloatingPoint+Extensions.swift */; };
 		738D7B982CE4EC35007E1841 /* CGPoint+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 738D7B962CE4EC35007E1841 /* CGPoint+Extensions.swift */; };
+		73B6F2DE2CE9C6720053B2B8 /* AICenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73B6F2DD2CE9C6720053B2B8 /* AICenter.swift */; };
+		73B6F2E02CE9EE7B0053B2B8 /* DoubaoAI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73B6F2DF2CE9EE7B0053B2B8 /* DoubaoAI.swift */; };
 		A35A11CF1EF4EB070072FE74 /* ScieneView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A35A11CE1EF4EB070072FE74 /* ScieneView+Extension.swift */; };
 		A3D672ED1EF0E7C500110E48 /* Cup.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3D672EC1EF0E7C500110E48 /* Cup.swift */; };
 		A3D672EF1EF0E80200110E48 /* Candle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3D672EE1EF0E80200110E48 /* Candle.swift */; };
@@ -59,6 +61,8 @@
 		58DE9FC61FDDA041008E25AF /* VirtualObjectsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualObjectsManager.swift; sourceTree = "<group>"; };
 		738D7B952CE4EC35007E1841 /* FloatingPoint+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FloatingPoint+Extensions.swift"; sourceTree = "<group>"; };
 		738D7B962CE4EC35007E1841 /* CGPoint+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGPoint+Extensions.swift"; sourceTree = "<group>"; };
+		73B6F2DD2CE9C6720053B2B8 /* AICenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICenter.swift; sourceTree = "<group>"; };
+		73B6F2DF2CE9EE7B0053B2B8 /* DoubaoAI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoubaoAI.swift; sourceTree = "<group>"; };
 		A35A11CE1EF4EB070072FE74 /* ScieneView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ScieneView+Extension.swift"; sourceTree = "<group>"; };
 		A3D672E41EF0E64100110E48 /* ARKitProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ARKitProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A3D672EC1EF0E7C500110E48 /* Cup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cup.swift; sourceTree = "<group>"; };
@@ -109,6 +113,7 @@
 		3929C48A1E89EC2C00E00B60 /* ARKitProject */ = {
 			isa = PBXGroup;
 			children = (
+				73B6F2DC2CE9C6340053B2B8 /* AI */,
 				4665C4F52CE59043000EBC27 /* LoadingView */,
 				3929C48B1E89EC2C00E00B60 /* AppDelegate.swift */,
 				3929C48D1E89EC2C00E00B60 /* MainViewController.swift */,
@@ -136,6 +141,15 @@
 				4665C4F62CE5906F000EBC27 /* PandaLoadingView.swift */,
 			);
 			path = LoadingView;
+			sourceTree = "<group>";
+		};
+		73B6F2DC2CE9C6340053B2B8 /* AI */ = {
+			isa = PBXGroup;
+			children = (
+				73B6F2DD2CE9C6720053B2B8 /* AICenter.swift */,
+				73B6F2DF2CE9EE7B0053B2B8 /* DoubaoAI.swift */,
+			);
+			path = AI;
 			sourceTree = "<group>";
 		};
 		C40DF57B1EC2330700D9D59E /* Virtual Objects */ = {
@@ -171,6 +185,8 @@
 			dependencies = (
 			);
 			name = ARKitProject;
+			packageProductDependencies = (
+			);
 			productName = ARKitExample;
 			productReference = A3D672E41EF0E64100110E48 /* ARKitProject.app */;
 			productType = "com.apple.product-type.application";
@@ -203,6 +219,8 @@
 				Base,
 			);
 			mainGroup = 3929C47F1E89EC2C00E00B60;
+			packageReferences = (
+			);
 			productRefGroup = 3929C47F1E89EC2C00E00B60;
 			projectDirPath = "";
 			projectRoot = "";
@@ -249,6 +267,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				73B6F2DE2CE9C6720053B2B8 /* AICenter.swift in Sources */,
 				39C0B9511E9C63CB003FCA0C /* HitTestVisualization.swift in Sources */,
 				A35A11CF1EF4EB070072FE74 /* ScieneView+Extension.swift in Sources */,
 				3929C48E1E89EC2C00E00B60 /* MainViewController.swift in Sources */,
@@ -259,6 +278,7 @@
 				738D7B972CE4EC35007E1841 /* FloatingPoint+Extensions.swift in Sources */,
 				A3D672F11EF0E81B00110E48 /* Chair.swift in Sources */,
 				A3D672F51EF0E8DF00110E48 /* Vase.swift in Sources */,
+				73B6F2E02CE9EE7B0053B2B8 /* DoubaoAI.swift in Sources */,
 				3987BEDC1E9E057F00167FAC /* Gesture.swift in Sources */,
 				738D7B982CE4EC35007E1841 /* CGPoint+Extensions.swift in Sources */,
 				4665C4F72CE5906F000EBC27 /* PandaLoadingView.swift in Sources */,
@@ -412,9 +432,9 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = USRC9KNP8W;
 				INFOPLIST_FILE = "$(SRCROOT)/ARKitProject/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.globalpay.arkit-tao";
+				PRODUCT_BUNDLE_IDENTIFIER = com.globalpay.arkittao;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
@@ -430,9 +450,9 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 277JV3TTVQ;
 				INFOPLIST_FILE = "$(SRCROOT)/ARKitProject/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.example.arkit-project";
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.arkittao;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
