@@ -6,6 +6,7 @@ extension ARSCNView {
 	func setUp(viewController: MainViewController, session: ARSession) {
 		delegate = viewController
 		self.session = session
+        self.session.delegate = viewController
 		antialiasingMode = .multisampling4X
 		automaticallyUpdatesLighting = false
 		preferredFramesPerSecond = 60
