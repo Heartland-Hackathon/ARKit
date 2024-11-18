@@ -24,7 +24,7 @@ class MainViewController: UIViewController {
     
     let DEFAULT_DISTANCE_CAMERA_TO_OBJECTS = Float(10)
     
-    let gravity: Float = -2
+    let gravity: Float = -1
     var play: Bool = false
     var audioPlayer: AVAudioPlayer?
     
@@ -131,7 +131,32 @@ class MainViewController: UIViewController {
     @IBOutlet var sceneView: ARSCNView!
     
     func setupMenuView() {
-        menuContentView.data = data
+        let jsonString = """
+        [
+            {
+                "itemName": "vase", 
+                "itemId": 1
+            }, 
+            {
+                "itemName": "lamp", 
+                "itemId": 2
+            }, 
+            {
+                "itemName": "chair", 
+                "itemId": 3
+            }, 
+            {
+                "itemName": "cup", 
+                "itemId": 4
+            }, 
+            {
+                "itemName": "candle", 
+                "itemId": 5
+            },
+        ]
+        """
+        MenuObjectManager.share.convertMenuToObject(jsonString: jsonString)
+        menuContentView.data = MenuObjectManager.share.menuVirtualObjects
         view.addSubview(menuContentView)
         view.addSubview(foldButton)
         countLabel.center = view.center
@@ -610,7 +635,6 @@ extension MainViewController:
         let spinner = UIActivityIndicatorView()
         spinner.center = addObjectButton.center
         spinner.bounds.size = CGSize(width: addObjectButton.bounds.width - 5, height: addObjectButton.bounds.height - 5)
-        addObjectButton.setImage(#imageLiteral(resourceName: "buttonring"), for: [])
         sceneView.addSubview(spinner)
         spinner.startAnimating()
         
@@ -634,8 +658,8 @@ extension MainViewController:
                 // Update the icon of the add object button
                 let buttonImage = UIImage.composeButtonImage(from: object.thumbImage)
                 let pressedButtonImage = UIImage.composeButtonImage(from: object.thumbImage, alpha: 0.3)
-                self.addObjectButton.setImage(buttonImage, for: [])
-                self.addObjectButton.setImage(pressedButtonImage, for: [.highlighted])
+//                self.addObjectButton.setImage(buttonImage, for: [])
+//                self.addObjectButton.setImage(pressedButtonImage, for: [.highlighted])
                 self.isLoadingObject = false
             }
         }
@@ -927,7 +951,8 @@ extension MainViewController: MenuContentViewDelegate {
         guard let pandaView = PandaLoadingView.showLoading() else { return }
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1, execute: {
             PandaLoadingView.dismissLoading(view: pandaView)
-            let object = VirtualObject(modelName: self.data[index].0, fileExtension: "scn", thumbImageFilename: self.data[index].0, title: self.data[index].0)
+            let objct = MenuObjectManager.share.menuVirtualObjects[index]
+            let object = VirtualObject(modelName: objct.modelName, fileExtension: objct.fileExtension, thumbImageFilename: objct.modelName, title: objct.title, objct.itemId)
             self.loadVirtualObject(object: object)
         })
     }
@@ -1004,10 +1029,10 @@ extension MainViewController: ARSKViewDelegate, RedPackageDelegate  {
     }
     
     func initNodeWithPosition(position: SCNVector3) {
-        let object = VirtualObject()
-        object.redPackageNode.position = position
+        let node = RedPackageNode.loadRedPackage()
+        node.position = position
         sceneView.scene.physicsWorld.gravity = SCNVector3(x: 0, y: gravity, z: 0)
-        sceneView.scene.rootNode.addChildNode(object.redPackageNode)
+        sceneView.scene.rootNode.addChildNode(node)
     }
     
     func gesture(didSelect nodeName: String) {

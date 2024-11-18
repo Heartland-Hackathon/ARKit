@@ -129,7 +129,7 @@ class SingleFingerGesture: Gesture {
         hitTestOptions[SCNHitTestOption.boundingBoxOnly] = true
         let results: [SCNHitTestResult] = sceneView.hitTest(touch.location(in: sceneView), options: hitTestOptions)
         for result in results {
-            if result.node.name == VirtualObject.redPackageName {
+            if result.node.name == RedPackageNode.redPackageName {
                 if let validateDelegate = redPackageDelegate {
                     validateDelegate.gesture(didSelect: result.node.name ?? "")
                 }

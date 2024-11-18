@@ -86,7 +86,7 @@ class CardTableViewCell: UITableViewCell {
 class MenuContentView: UIView {
     
     var delegate: MenuContentViewDelegate?
-    var data: [(String, String)]? {
+    var data: [VirtualObject]? {
         didSet {
             menuTableView.reloadData()
         }
@@ -154,8 +154,8 @@ extension MenuContentView: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: identifer, for: indexPath) as! CardTableViewCell
-        if let item = data?[indexPath.row] {
-            cell.configure(title: item.0, description: item.1)
+        if let item = data?[indexPath.row] as? VirtualObject {
+            cell.configure(title: item.title, description: "\(item.title) \(indexPath.row)")
         }
         return cell
     }
