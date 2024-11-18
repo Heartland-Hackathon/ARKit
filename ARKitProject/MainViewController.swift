@@ -4,6 +4,7 @@ import SceneKit
 import UIKit
 import Photos
 import AVFoundation
+import Vision
 
 class MainViewController: UIViewController {
     var dragOnInfinitePlanesEnabled = false
@@ -69,6 +70,9 @@ class MainViewController: UIViewController {
             y: sceneView.bounds.size.height - (sceneView.bounds.size.height / 1.618))
     }
     
+    private var handPoseRequest = VNDetectHumanHandPoseRequest()
+    private var previousHandPosition: CGPoint? // 缓存上一帧手的位置（用于挥手手势）
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -77,6 +81,7 @@ class MainViewController: UIViewController {
         setupDebug()
         setupUIControls()
         setupFocusSquare()
+        setupVision()
         updateSettings()
         resetVirtualObject()
         setupMenuView()
@@ -646,12 +651,12 @@ extension MainViewController: ARSCNViewDelegate {
             self.updateFocusSquare()
             self.hitTestVisualization?.render()
             
-            // If light estimation is enabled, update the intensity of the model's lights and the environment map
-            //			if let lightEstimate = self.session.currentFrame?.lightEstimate {
-            //				self.sceneView.enableEnvironmentMapWithIntensity(lightEstimate.ambientIntensity / 40)
-            //			} else {
-            //				self.sceneView.enableEnvironmentMapWithIntensity(25)
-            //			}
+//             If light estimation is enabled, update the intensity of the model's lights and the environment map
+//            			if let lightEstimate = self.session.currentFrame?.lightEstimate {
+//            				self.sceneView.enableEnvironmentMapWithIntensity(lightEstimate.ambientIntensity / 40)
+//            			} else {
+//            				self.sceneView.enableEnvironmentMapWithIntensity(25)
+//            			}
             
             for node in VirtualObjectsManager.shared.getVirtualObjects() {
                 let position = node.ringNode.convertPosition(SCNVector3Zero, to: nil)
@@ -964,7 +969,7 @@ extension MainViewController {
     }
 }
 
-// MARK: - Ring
+// MARK: - Focus Ring
 extension MainViewController {
     
     func onSelectNode(node: VirtualObject) {
@@ -976,6 +981,7 @@ extension MainViewController {
     }
 }
 
+// MARK: - RedPackage
 extension MainViewController: ARSKViewDelegate, RedPackageDelegate  {
     func renderer(_ renderer: any SCNSceneRenderer, didRenderScene scene: SCNScene, atTime time: TimeInterval) {
         if (arc4random() % 4 == 0 && play) {
@@ -1023,5 +1029,94 @@ extension MainViewController: ARSKViewDelegate, RedPackageDelegate  {
                 self.countLabel.isHidden = true
             }
         })
+    }
+}
+
+// MARK: Vision
+extension MainViewController: ARSessionDelegate {
+    
+    func session(_ session: ARSession, didUpdate frame: ARFrame) {
+            // 获取摄像头图像
+            let pixelBuffer = frame.capturedImage
+            
+            // 创建 Vision 请求处理器
+            let requestHandler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, orientation: .up, options: [:])
+            do {
+                try requestHandler.perform([handPoseRequest])
+                if let observations = handPoseRequest.results {
+                    processHandPoseObservations(observations)
+                }
+            } catch {
+                print("Vision 请求失败: \(error)")
+            }
+        }
+    
+    private func setupVision() {
+        handPoseRequest.maximumHandCount = 1
+    }
+    
+    private func processHandPoseObservations(_ observations: [VNHumanHandPoseObservation]) {
+        guard let observation = observations.first else { return }
+        
+        do {
+            let thumbTip = try observation.recognizedPoint(.thumbTip)
+            let indexTip = try observation.recognizedPoint(.indexTip)
+            let middleTip = try observation.recognizedPoint(.middleTip)
+            let ringTip = try observation.recognizedPoint(.ringTip)
+            let littleTip = try observation.recognizedPoint(.littleTip)
+            let wrist = try observation.recognizedPoint(.wrist)
+            
+            if isOKGesture(thumbTip: thumbTip, indexTip: indexTip, middleTip: middleTip, ringTip: ringTip, littleTip: littleTip) {
+                handleOKGesture()
+            } else if isThumbsUpGesture(thumbTip: thumbTip, indexTip: indexTip, middleTip: middleTip, ringTip: ringTip, littleTip: littleTip, wrist: wrist) {
+                handleThumbsUpGesture()
+            } else if isWaveGesture(wrist: wrist) {
+                handleWaveGesture()
+            }
+        } catch {
+            print("手势检测失败: \(error)")
+        }
+    }
+    
+    private func isOKGesture(thumbTip: VNRecognizedPoint, indexTip: VNRecognizedPoint, middleTip: VNRecognizedPoint, ringTip: VNRecognizedPoint, littleTip: VNRecognizedPoint) -> Bool {
+        let thumbIndexDistance = hypot(thumbTip.location.x - indexTip.location.x, thumbTip.location.y - indexTip.location.y)
+        let thumbMiddleDistance = hypot(thumbTip.location.x - middleTip.location.x, thumbTip.location.y - middleTip.location.y)
+        return thumbIndexDistance < 0.1 && thumbMiddleDistance > 0.2
+    }
+    
+    private func isThumbsUpGesture(thumbTip: VNRecognizedPoint, indexTip: VNRecognizedPoint, middleTip: VNRecognizedPoint, ringTip: VNRecognizedPoint, littleTip: VNRecognizedPoint, wrist: VNRecognizedPoint) -> Bool {
+        // 拇指向上，其他手指向下
+        let thumbToWristY = thumbTip.location.y - wrist.location.y
+        return thumbToWristY > 0.5 && indexTip.location.y < wrist.location.y && middleTip.location.y < wrist.location.y
+    }
+    
+    private func isWaveGesture(wrist: VNRecognizedPoint) -> Bool {
+        guard let previousPosition = previousHandPosition else {
+            previousHandPosition = wrist.location
+            return false
+        }
+        let movement = wrist.location.x - previousPosition.x
+        previousHandPosition = wrist.location
+        return abs(movement) > 0.2 // 检测手部的左右大幅移动
+    }
+    
+    private func handleOKGesture() {
+        showConfirmationMessage("\(VirtualObjectsManager.shared.getVirtualObjectSelected()?.title ?? "") 已添加到订单！")
+    }
+
+    private func handleThumbsUpGesture() {
+        print("点赞手势: 触发点赞操作")
+        showConfirmationMessage("感谢您的点赞！")
+    }
+
+    private func handleWaveGesture() {
+        print("挥手手势: 触发挥手操作")
+        showConfirmationMessage("检测到挥手！")
+    }
+
+    private func showConfirmationMessage(_ message: String) {
+        let alert = UIAlertController(title: "操作成功", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "确定", style: .default, handler: nil))
+        present(alert, animated: true, completion: nil)
     }
 }
