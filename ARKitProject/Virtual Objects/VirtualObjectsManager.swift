@@ -58,6 +58,16 @@ class VirtualObjectsManager {
 	func getVirtualObjects() -> [VirtualObject] {
 		return self.virtualObjects
 	}
+    
+    func getVirtualObject(by name: String) -> VirtualObject? {
+        return self.virtualObjects.filter { obj in
+            return obj.name == name
+        }.first
+    }
+    
+    func getVirtualObjectsById(id: UUID) -> [VirtualObject] {
+        return self.virtualObjects
+    }
 
 	func isAVirtualObjectPlaced() -> Bool {
 		return virtualObjectSelected != nil

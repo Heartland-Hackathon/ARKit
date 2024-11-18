@@ -651,3 +651,9 @@ extension NSLayoutConstraint {
         return self
     }
 }
+
+extension Int {
+    static func getRandomNumber(from: Int, to: Int) -> Int {
+        return from + Int(arc4random_uniform(UInt32(to - from + 1)))
+    }
+}

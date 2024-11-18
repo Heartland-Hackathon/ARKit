@@ -5,6 +5,8 @@ import ARKit
 class VirtualObject: SCNNode {
     static let ringName = "ring"
 	static let ROOT_NAME = "Virtual object root node"
+    static let redPackageImage = "red-package"
+    static let redPackageName = "red-package-node"
 	var fileExtension: String = ""
 	var thumbImage: UIImage!
 	var title: String = ""
@@ -26,6 +28,39 @@ class VirtualObject: SCNNode {
         ringNode.light?.type = SCNLight.LightType.ambient
         ringNode.eulerAngles = SCNVector3(90.0.degreesToRadians, 0, 0)
         return ringNode
+    }()
+    
+    lazy var redPackageNode: SCNNode = {
+        let geometry = SCNBox(width: 1.0, height: 1.0, length: 0.01, chamferRadius: 0)
+        
+        let material = SCNMaterial()
+        material.diffuse.contents = UIImage(named: VirtualObject.redPackageImage)
+        geometry.materials = [material, material, material, material, material, material]
+
+        let geometryNode = SCNNode(geometry: geometry)
+        geometryNode.name = VirtualObject.redPackageName
+        geometryNode.light = SCNLight()
+        geometryNode.light?.type = .omni
+        geometryNode.physicsBody = SCNPhysicsBody(type: .dynamic, shape: nil)
+
+        let x = Int(arc4random_uniform(9)) - 4
+        let y = 1
+        let z = Int(arc4random_uniform(9)) - 4
+        let force = SCNVector3(x: Float(x), y: -Float(y), z: Float(z))
+        let positionForce = SCNVector3(x: 0.05, y: 0.05, z: 0.05)
+        geometryNode.physicsBody?.applyForce(force, at: positionForce, asImpulse: true)
+        return geometryNode
+    }()
+    
+    lazy var textNode: SCNNode = {
+        let textGeometry = SCNText(string: "AR Kit", extrusionDepth: 1.0)
+        textGeometry.font = UIFont.systemFont(ofSize: 1.0)
+        textGeometry.firstMaterial?.diffuse.contents = UIColor.red
+        let node = SCNNode(geometry: textGeometry)
+        node.light = SCNLight()
+        node.light?.type = SCNLight.LightType.omni
+        node.scale = SCNVector3(x: 0.5, y: 0.5, z: 0.5)
+        return node
     }()
     
     var isRingHidden: Bool = true {

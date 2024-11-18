@@ -1,6 +1,11 @@
 import Foundation
 import ARKit
 
+@objc
+protocol RedPackageDelegate {
+    func gesture(didSelect nodeName: String)
+}
+
 class Gesture {
 
 	enum TouchEventType {
@@ -12,13 +17,20 @@ class Gesture {
 
 	var currentTouches = Set<UITouch>()
 	let sceneView: ARSCNView
-	let virtualObject: VirtualObject
+	var virtualObject: VirtualObject?
+    var redPackageDelegate: RedPackageDelegate?
 
 	var refreshTimer: Timer?
+    
+    init(_ touches: Set<UITouch>, _ sceneView: ARSCNView, _ delegate: RedPackageDelegate?) {
+        currentTouches = touches
+        self.sceneView = sceneView
+        self.redPackageDelegate = delegate
+    }
 
 	init(_ touches: Set<UITouch>, _ sceneView: ARSCNView, _ virtualObject: VirtualObject) {
 		currentTouches = touches
-		self.sceneView = sceneView
+        self.sceneView = sceneView
 		self.virtualObject = virtualObject
 
 		// Refresh the current gesture at 60 Hz - This ensures smooth updates even when no
@@ -29,11 +41,15 @@ class Gesture {
 	}
 
 	static func startGestureFromTouches(_ touches: Set<UITouch>, _ sceneView: ARSCNView,
-	                                    _ virtualObject: VirtualObject) -> Gesture? {
+                                        _ virtualObject: VirtualObject?, _ delegate: RedPackageDelegate?) -> Gesture? {
 		if touches.count == 1 {
-			return SingleFingerGesture(touches, sceneView, virtualObject)
+            guard let validateObject = virtualObject else {
+                return SingleFingerGesture(touches, sceneView, delegate)
+            }
+			return SingleFingerGesture(touches, sceneView, validateObject)
 		} else if touches.count == 2 {
-			return TwoFingerGesture(touches, sceneView, virtualObject)
+            guard let validateObject = virtualObject else { return nil }
+			return TwoFingerGesture(touches, sceneView, validateObject)
 		} else {
 			return nil
 		}
@@ -47,7 +63,7 @@ class Gesture {
 		}
 	}
 
-	func updateGestureFromTouches(_ touches: Set<UITouch>, _ type: TouchEventType) -> Gesture? {
+    func updateGestureFromTouches(_ touches: Set<UITouch>, _ type: TouchEventType) -> Gesture? {
 		if touches.isEmpty {
 			// No touches -> Do nothing.
 			return self
@@ -71,7 +87,7 @@ class Gesture {
 				singleFingerGesture.finishGesture()
 				singleFingerGesture.refreshTimer?.invalidate()
 				singleFingerGesture.refreshTimer = nil
-				return Gesture.startGestureFromTouches(currentTouches, sceneView, virtualObject)
+                return Gesture.startGestureFromTouches(currentTouches, sceneView, virtualObject, redPackageDelegate)
 			}
 		} else if let twoFingerGesture = self as? TwoFingerGesture {
 
@@ -104,7 +120,24 @@ class SingleFingerGesture: Gesture {
 	var hasMovedObject = false
 	var firstTouchWasOnObject = false
 	var dragOffset = CGPoint()
-
+    
+    override init(_ touches: Set<UITouch>, _ sceneView: ARSCNView, _ delegate: RedPackageDelegate?) {
+        super.init(touches, sceneView, delegate)
+        let touch = currentTouches[currentTouches.index(currentTouches.startIndex, offsetBy: 0)]
+        
+        var hitTestOptions = [SCNHitTestOption: Any]()
+        hitTestOptions[SCNHitTestOption.boundingBoxOnly] = true
+        let results: [SCNHitTestResult] = sceneView.hitTest(touch.location(in: sceneView), options: hitTestOptions)
+        for result in results {
+            if result.node.name == VirtualObject.redPackageName {
+                if let validateDelegate = redPackageDelegate {
+                    validateDelegate.gesture(didSelect: result.node.name ?? "")
+                }
+                break
+            }
+        } 
+    }
+    
 	override init(_ touches: Set<UITouch>, _ sceneView: ARSCNView, _ virtualObject: VirtualObject) {
 		super.init(touches, sceneView, virtualObject)
 
@@ -126,7 +159,7 @@ class SingleFingerGesture: Gesture {
 	}
 
 	func updateGesture() {
-
+        guard let validateVirtualObject = virtualObject else { return }
 		let touch = currentTouches[currentTouches.index(currentTouches.startIndex, offsetBy: 0)]
 		latestTouchLocation = touch.location(in: sceneView)
 
@@ -136,7 +169,7 @@ class SingleFingerGesture: Gesture {
 			if distanceFromStartLocation >= translationThreshold {
 				translationThresholdPassed = true
 
-				let currentObjectLocation = CGPoint(sceneView.projectPoint(virtualObject.position))
+				let currentObjectLocation = CGPoint(sceneView.projectPoint(validateVirtualObject.position))
 				dragOffset = latestTouchLocation - currentObjectLocation
 			}
 		}
@@ -146,13 +179,13 @@ class SingleFingerGesture: Gesture {
 
 			let offsetPos = latestTouchLocation - dragOffset
 
-			virtualObject.translateBasedOnScreenPos(offsetPos, instantly:false, infinitePlane:true)
+            validateVirtualObject.translateBasedOnScreenPos(offsetPos, instantly:false, infinitePlane:true)
 			hasMovedObject = true
 		}
 	}
 
 	func finishGesture() {
-
+        guard let validateVirtualObject = virtualObject else { return }
 		// Single finger touch allows teleporting the object or interacting with it.
 
 		// Do not do anything if this gesture is being finished because
@@ -188,7 +221,7 @@ class SingleFingerGesture: Gesture {
 			// Teleport the object to whereever the user touched the screen - as long as the
 			// drag threshold has not been reached.
 			if !translationThresholdPassed {
-				virtualObject.translateBasedOnScreenPos(latestTouchLocation, instantly:true, infinitePlane:false)
+                validateVirtualObject.translateBasedOnScreenPos(latestTouchLocation, instantly:true, infinitePlane:false)
 			}
 		}
 	}
@@ -373,6 +406,7 @@ class TwoFingerGesture: Gesture {
 	}
 
     func updateTranslation(midpoint: CGPoint) {
+        guard let validateVirtualObject = virtualObject else { return  }
         if !translationThresholdPassed {
 
             let initialLocationTocurrentLocation = midpoint - initialMidPoint
@@ -389,18 +423,19 @@ class TwoFingerGesture: Gesture {
             if distanceFromStartLocation >= threshold {
                 translationThresholdPassed = true
 
-                let currentObjectLocation = CGPoint(sceneView.projectPoint(virtualObject.position))
+                let currentObjectLocation = CGPoint(sceneView.projectPoint(validateVirtualObject.position))
                 dragOffset = midpoint - currentObjectLocation
             }
         }
 
         if translationThresholdPassed {
             let offsetPos = midpoint - dragOffset
-            virtualObject.translateBasedOnScreenPos(offsetPos, instantly: false, infinitePlane: true)
+            validateVirtualObject.translateBasedOnScreenPos(offsetPos, instantly: false, infinitePlane: true)
         }
     }
 
     func updateRotation(span: CGPoint) {
+        guard let validateVirtualObject = virtualObject else { return }
         let midpointToFirstTouch = span / 2
         let currentAngle = atan2(Float(midpointToFirstTouch.x), Float(midpointToFirstTouch.y))
 
@@ -431,11 +466,12 @@ class TwoFingerGesture: Gesture {
             // For looking down on the object (99% of all use cases), we need to subtract the angle.
             // To make rotation also work correctly when looking from below the object one would have to
             // flip the sign of the angle depending on whether the object is above or below the camera...
-            virtualObject.eulerAngles.y = initialObjectAngle - currentAngleToInitialFingerAngle
+            validateVirtualObject.eulerAngles.y = initialObjectAngle - currentAngleToInitialFingerAngle
         }
     }
 
     func updateScaling(span: CGPoint) {
+        guard let validateVirtualObject = virtualObject else { return }
         let distanceBetweenFingers = span.length()
 
         if !scaleThresholdPassed {
@@ -465,9 +501,9 @@ class TwoFingerGesture: Gesture {
                  newScale = 1.0 // Snap scale to 100% when getting close.
                  }*/
 
-                virtualObject.scale = SCNVector3Uniform(newScale)
+                validateVirtualObject.scale = SCNVector3Uniform(newScale)
 
-                if let nodeWhichReactsToScale = virtualObject.reactsToScale() {
+                if let nodeWhichReactsToScale = validateVirtualObject.reactsToScale() {
                     nodeWhichReactsToScale.reactToScale()
                 }
             }

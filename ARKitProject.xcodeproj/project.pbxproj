@@ -21,6 +21,9 @@
 		39D8DC1B1E8ADAE600386B05 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 39D8DC1A1E8ADAE600386B05 /* LaunchScreen.storyboard */; };
 		4665C4F72CE5906F000EBC27 /* PandaLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4665C4F62CE5906F000EBC27 /* PandaLoadingView.swift */; };
 		4665C4FC2CE62DFE000EBC27 /* MenuContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4665C4FB2CE62DFE000EBC27 /* MenuContentView.swift */; };
+		4665C4FE2CE73C8E000EBC27 /* RedPackage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4665C4FD2CE73C8E000EBC27 /* RedPackage.swift */; };
+		4665C5002CE894CA000EBC27 /* sound.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4665C4FF2CE894CA000EBC27 /* sound.wav */; };
+		4665C5022CEA09AF000EBC27 /* CountDownTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4665C5012CEA09AF000EBC27 /* CountDownTimer.swift */; };
 		582FB0721F43EAC600AD8041 /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 582FB0711F43EAC600AD8041 /* .swiftlint.yml */; };
 		58DE9FC71FDDA042008E25AF /* VirtualObjectsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58DE9FC61FDDA041008E25AF /* VirtualObjectsManager.swift */; };
 		738D7B972CE4EC35007E1841 /* FloatingPoint+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 738D7B952CE4EC35007E1841 /* FloatingPoint+Extensions.swift */; };
@@ -57,6 +60,9 @@
 		39D8DC1A1E8ADAE600386B05 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		4665C4F62CE5906F000EBC27 /* PandaLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PandaLoadingView.swift; sourceTree = "<group>"; };
 		4665C4FB2CE62DFE000EBC27 /* MenuContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuContentView.swift; sourceTree = "<group>"; };
+		4665C4FD2CE73C8E000EBC27 /* RedPackage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedPackage.swift; sourceTree = "<group>"; };
+		4665C4FF2CE894CA000EBC27 /* sound.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = sound.wav; sourceTree = "<group>"; };
+		4665C5012CEA09AF000EBC27 /* CountDownTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountDownTimer.swift; sourceTree = "<group>"; };
 		582FB0711F43EAC600AD8041 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text; path = .swiftlint.yml; sourceTree = "<group>"; };
 		58DE9FC61FDDA041008E25AF /* VirtualObjectsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualObjectsManager.swift; sourceTree = "<group>"; };
 		738D7B952CE4EC35007E1841 /* FloatingPoint+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FloatingPoint+Extensions.swift"; sourceTree = "<group>"; };
@@ -127,6 +133,7 @@
 				C40DF57B1EC2330700D9D59E /* Virtual Objects */,
 				3929C49E1E89EE4400E00B60 /* Models.scnassets */,
 				3929C4921E89EC2C00E00B60 /* Assets.xcassets */,
+				4665C4FF2CE894CA000EBC27 /* sound.wav */,
 				3929C4971E89EC2C00E00B60 /* Info.plist */,
 				3929C48F1E89EC2C00E00B60 /* Main.storyboard */,
 				39D8DC1A1E8ADAE600386B05 /* LaunchScreen.storyboard */,
@@ -162,8 +169,10 @@
 				A3D672F01EF0E81B00110E48 /* Chair.swift */,
 				A3D672F21EF0E84D00110E48 /* Lamp.swift */,
 				A3D672F41EF0E8DF00110E48 /* Vase.swift */,
+				4665C4FD2CE73C8E000EBC27 /* RedPackage.swift */,
 				738D7B962CE4EC35007E1841 /* CGPoint+Extensions.swift */,
 				738D7B952CE4EC35007E1841 /* FloatingPoint+Extensions.swift */,
+				4665C5012CEA09AF000EBC27 /* CountDownTimer.swift */,
 			);
 			path = "Virtual Objects";
 			sourceTree = "<group>";
@@ -203,7 +212,7 @@
 				TargetAttributes = {
 					3929C4871E89EC2C00E00B60 = {
 						CreatedOnToolsVersion = 9.0;
-						DevelopmentTeam = USRC9KNP8W;
+						DevelopmentTeam = LV7L4CF48S;
 						LastSwiftMigration = 0900;
 						ProvisioningStyle = Automatic;
 					};
@@ -239,6 +248,7 @@
 				3929C49F1E89EE4400E00B60 /* Models.scnassets in Resources */,
 				39D8DC1B1E8ADAE600386B05 /* LaunchScreen.storyboard in Resources */,
 				3929C4931E89EC2C00E00B60 /* Assets.xcassets in Resources */,
+				4665C5002CE894CA000EBC27 /* sound.wav in Resources */,
 				3929C4911E89EC2C00E00B60 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -274,6 +284,7 @@
 				4665C4FC2CE62DFE000EBC27 /* MenuContentView.swift in Sources */,
 				C41366B91EB80DD400EC054A /* TextManager.swift in Sources */,
 				39C0B95A1E9C6B1F003FCA0C /* Utilities.swift in Sources */,
+				4665C4FE2CE73C8E000EBC27 /* RedPackage.swift in Sources */,
 				392BB82C1EA19A7C00FBBAC8 /* Plane.swift in Sources */,
 				738D7B972CE4EC35007E1841 /* FloatingPoint+Extensions.swift in Sources */,
 				A3D672F11EF0E81B00110E48 /* Chair.swift in Sources */,
@@ -289,6 +300,7 @@
 				C490DAC41E9AB63400210960 /* VirtualObjectSelectionViewController.swift in Sources */,
 				C42A71BD1E9C0AF200944367 /* FocusSquare.swift in Sources */,
 				3929C48C1E89EC2C00E00B60 /* AppDelegate.swift in Sources */,
+				4665C5022CEA09AF000EBC27 /* CountDownTimer.swift in Sources */,
 				A3D672EF1EF0E80200110E48 /* Candle.swift in Sources */,
 				C4FBC02B1EC6438B003F7864 /* ARCameraTrackingState.swift in Sources */,
 				58DE9FC71FDDA042008E25AF /* VirtualObjectsManager.swift in Sources */,
@@ -430,11 +442,11 @@
 				CODE_SIGN_IDENTITY = "-";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = USRC9KNP8W;
+				DEVELOPMENT_TEAM = LV7L4CF48S;
 				INFOPLIST_FILE = "$(SRCROOT)/ARKitProject/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.globalpay.arkittao;
+				PRODUCT_BUNDLE_IDENTIFIER = com.globalpay.arkittao1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
